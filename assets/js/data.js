@@ -439,32 +439,27 @@ const CASE_STUDIES = [
 
 /* ============================================================
    個人 Side Projects（格式和 PROJECTS 一樣，可以放連結）
-   下面兩個是範例，換成你的作品；沒有的話留空 [] 就會隱藏整個區塊。
+   沒有的話留空 [] 就會隱藏整個區塊。
    ============================================================ */
 const SIDE_PROJECTS = [
   {
-    title: "（範例）我的第一個 Side Project",
-    subtitle: "repo-name",
+    title: "軟體人每日情報 DevBrief Daily",
+    subtitle: "給軟體工程師的中英雙語每日情報",
     period: "2026",
-    color: "coral", mark: "Side",
+    color: "sky", mark: "情報",
     image: "",
-    description: "用一兩句說明它是什麼、為什麼做它。",
-    points: ["重點功能一", "重點功能二"],
-    tags: ["JavaScript", "HTML / CSS"],
-    links: [
-      { label: "線上試用", url: "#" },
-      { label: "原始碼", url: "https://github.com/wantingpan" },
+    description: "每天替軟體工程師整理 AI、語言與框架、雲端 DevOps、資安的重點，每則都附原文連結和來源類型，5 分鐘掌握今天該知道、該處理的事。",
+    points: [
+      "需要行動清單：整合 CISA 已遭利用漏洞與 GitHub 套件漏洞公告，直接列出該修補的項目",
+      "版本與支援期限：Node.js、Python、.NET、React 等 14 種技術的 EOL 日期一覽",
+      "事件影響：用「發生 → 影響 → 該做」拆解重大技術事件",
+      "名詞小教室：用白話解釋 SBOM、CVE、零時差漏洞等名詞，非技術人員也看得懂",
+      "中英雙語切換；推送到 main 後由 GitHub Actions 自動檢查，Netlify 自動部署",
     ],
-  },
-  {
-    title: "（範例）用 AI 一起做的小工具",
-    subtitle: "tool-name",
-    period: "2026",
-    color: "sun", mark: "AI",
-    image: "",
-    description: "用一兩句說明它是什麼、解決什麼問題。",
-    points: ["重點功能一", "重點功能二"],
-    tags: ["Python", "AI"],
-    links: [{ label: "原始碼", url: "https://github.com/wantingpan" }],
+    tags: ["Astro", "Node.js", "GitHub Actions", "Netlify", "資安", "雙語"],
+    links: [
+      { label: "線上看", url: "https://devbrief-daily.netlify.app/zh-tw/" },
+      { label: "原始碼", url: "https://github.com/wantingpan/dev-intel-hub" },
+    ],
   },
 ];
