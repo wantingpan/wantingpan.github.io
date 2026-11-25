@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" font-family="'Bricolage Grotesque','Noto Sans TC','Microsoft JhengHei',sans-serif">
+  <defs>
+    <pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="2.5" cy="2.5" r="1.8" fill="#1d1a2b" opacity="0.14"/>
+    </pattern>
+  </defs>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#fff8ef"/>
+  <rect width="1200" height="630" fill="url(#dots)"/>
+
+  <!-- Decorative blobs/circles -->
+  <circle cx="1080" cy="110" r="150" fill="#ff6b5b" stroke="#1d1a2b" stroke-width="5"/>
+  <circle cx="120" cy="540" r="110" fill="#3ccf9e" stroke="#1d1a2b" stroke-width="5"/>
+  <circle cx="1040" cy="520" r="85" fill="#8b6cff" stroke="#1d1a2b" stroke-width="5"/>
+
+  <!-- Main Neo-brutalist Card -->
+  <rect x="86" y="76" width="1044" height="494" rx="32" fill="#1d1a2b"/>
+  <rect x="74" y="64" width="1044" height="494" rx="32" fill="#ffffff" stroke="#1d1a2b" stroke-width="5"/>
+
+  <!-- Top Pill -->
+  <rect x="134" y="118" width="330" height="46" rx="23" fill="#fdeedd" stroke="#1d1a2b" stroke-width="3.5"/>
+  <circle cx="162" cy="141" r="8" fill="#3ccf9e" stroke="#1d1a2b" stroke-width="2.5"/>
+  <text x="182" y="148" font-size="20" font-weight="800" fill="#1d1a2b">台北 · 系統分析師 / 專案管理</text>
+
+  <!-- Handle -->
+  <text x="134" y="210" font-size="26" font-weight="800" fill="#5d5870">@wantingpan</text>
+
+  <!-- Main Headline -->
+  <text x="134" y="286" font-size="60" font-weight="900" fill="#1d1a2b">把複雜的商業需求，</text>
+  <rect x="130" y="346" width="552" height="30" rx="8" fill="#ffc93c" transform="rotate(-1.2 400 360)"/>
+  <text x="134" y="366" font-size="60" font-weight="900" fill="#1d1a2b">變成穩定好用的系統</text>
+
+  <!-- Skills / Keywords -->
+  <text x="134" y="424" font-size="22" font-weight="600" fill="#5d5870">系統分析 · Scrum 專案管理 · C# / .NET · Angular · Azure DevOps · Figma / Axure / UML</text>
+
+  <!-- Stats Badges -->
+  <rect x="138" y="458" width="210" height="68" rx="18" fill="#1d1a2b"/>
+  <rect x="134" y="454" width="210" height="68" rx="18" fill="#ff6b5b" stroke="#1d1a2b" stroke-width="3.5"/>
+  <text x="239" y="497" font-size="26" font-weight="900" fill="#1d1a2b" text-anchor="middle">10+ 年開發經驗</text>
+
+  <rect x="372" y="458" width="210" height="68" rx="18" fill="#1d1a2b"/>
+  <rect x="368" y="454" width="210" height="68" rx="18" fill="#ffc93c" stroke="#1d1a2b" stroke-width="3.5"/>
+  <text x="473" y="497" font-size="26" font-weight="900" fill="#1d1a2b" text-anchor="middle">17 個專案實績</text>
+
+  <rect x="606" y="458" width="210" height="68" rx="18" fill="#1d1a2b"/>
+  <rect x="602" y="454" width="210" height="68" rx="18" fill="#3ccf9e" stroke="#1d1a2b" stroke-width="3.5"/>
+  <text x="707" y="497" font-size="26" font-weight="900" fill="#1d1a2b" text-anchor="middle">6 個產業領域</text>
+</svg>

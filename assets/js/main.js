@@ -71,7 +71,10 @@
           : ""}
         ${p.points?.length ? `<ul class="card__points">${p.points.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
         <div class="tags">${(p.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
-        ${p.links?.length ? `<div class="card__links">${p.links.map(l => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}</div>` : ""}
+        ${(p.caseId || p.links?.length) ? `<div class="card__links">
+          ${p.caseId ? `<a class="card__case-link" href="#${esc(p.caseId)}">看完整案例分析 ↑</a>` : ""}
+          ${(p.links || []).map(l => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}
+        </div>` : ""}
       </div>
     </article>`;
   $("[data-grid]").innerHTML = PROJECTS.map(cardHTML).join("");
@@ -82,7 +85,41 @@
   if (sideList.length) side.innerHTML = sideList.map(cardHTML).join("");
   else side.closest("section").remove();
 
-  // Filter chips (only show categories that have projects)
+  // Filter chips & "Show all / Collapse" toggle (show 6 initially on "all")
+  const INITIAL_VISIBLE = 6;
+  let isExpanded = false;
+  let currentFilter = "all";
+  const moreWrap = $("[data-more-wrap]");
+  const moreBtn = $("[data-more-btn]");
+
+  const updateProjectVisibility = () => {
+    const cards = $$(".card", $("[data-grid]"));
+    cards.forEach((card, idx) => {
+      const match = currentFilter === "all" || card.dataset.cat === currentFilter;
+      card.classList.toggle("is-hidden", !match);
+      const collapse = currentFilter === "all" && !isExpanded && idx >= INITIAL_VISIBLE;
+      card.classList.toggle("is-collapsed", collapse);
+      if (match && !collapse) card.classList.add("is-in");
+    });
+    if (moreWrap && moreBtn) {
+      const needToggle = currentFilter === "all" && PROJECTS.length > INITIAL_VISIBLE;
+      moreWrap.hidden = !needToggle;
+      if (needToggle) {
+        moreBtn.textContent = isExpanded
+          ? "收合部分專案 ↑"
+          : `顯示全部 ${PROJECTS.length} 個專案（還有 ${PROJECTS.length - INITIAL_VISIBLE} 個）↓`;
+      }
+    }
+  };
+
+  if (moreBtn) {
+    moreBtn.addEventListener("click", () => {
+      isExpanded = !isExpanded;
+      updateProjectVisibility();
+      if (!isExpanded) $("#projects").scrollIntoView({ behavior: "smooth" });
+    });
+  }
+
   const count = id => (id === "all" ? PROJECTS.length : PROJECTS.filter(p => p.category === id).length);
   const chips = $("[data-chips]");
   chips.innerHTML = CATEGORIES.filter(c => count(c.id) > 0)
@@ -92,13 +129,10 @@
     const btn = e.target.closest("[data-filter]");
     if (!btn) return;
     $$(".chip", chips).forEach(c => c.setAttribute("aria-selected", c === btn));
-    const f = btn.dataset.filter;
-    $$(".card", $("[data-grid]")).forEach(card => {
-      const show = f === "all" || card.dataset.cat === f;
-      card.classList.toggle("is-hidden", !show);
-      if (show) card.classList.add("is-in");
-    });
+    currentFilter = btn.dataset.filter;
+    updateProjectVisibility();
   });
+  updateProjectVisibility();
 
   /* ---------- Case studies ---------- */
   const cases = $("[data-cases]");
@@ -112,7 +146,7 @@
         ? `<figure><button type="button" class="case__img" data-zoom="${esc(im.src)}" data-cap="${esc(im.caption || "")}"><img src="${esc(im.src)}" alt="${esc(im.caption || c.title)}" loading="lazy"></button>${im.caption ? `<figcaption>${esc(im.caption)}</figcaption>` : ""}</figure>`
         : `<figure><div class="case__ph"><span>＋</span>放入截圖<small>${esc(im.caption || "")}</small></div></figure>`).join("")}</div>` : "";
       return `
-      <article class="case reveal ${imgs.length ? "" : "case--noimg"}">
+      <article class="case reveal ${imgs.length ? "" : "case--noimg"}" ${c.id ? `id="${esc(c.id)}"` : ""}>
         <header class="case__head">
           <span class="case__num c-${esc(c.color || "coral")}">${String(i + 1).padStart(2, "0")}</span>
           <div>
@@ -170,6 +204,7 @@
   /* ---------- Contact ---------- */
   const C = typeof CONTACT !== "undefined" ? CONTACT : {};
   const L = PROFILE.links;
+  const resolvedEmail = L.email || (Array.isArray(L.emailParts) && L.emailParts[0] && L.emailParts[1] ? `${L.emailParts[0]}@${L.emailParts[1]}` : "");
 
   // Value props
   const vals = typeof VALUE_PROPS !== "undefined" ? VALUE_PROPS : [];
@@ -194,21 +229,20 @@
   if (C.prefs?.length) prefs.innerHTML = C.prefs.map(p => `<div><dt>${esc(p.label)}</dt><dd>${esc(p.value)}</dd></div>`).join("");
   else prefs.remove();
   const resp = $("[data-response]");
-  if (C.response && L.email) resp.textContent = C.response; else resp.remove();
+  if (C.response && resolvedEmail) resp.textContent = C.response; else resp.remove();
 
-  // Buttons
+  // Buttons (anti-scraper: assemble mailto on click if email is configured)
   const contact = [];
-  if (L.email) {
-    const mail = `mailto:${L.email}?subject=${encodeURIComponent(C.resumeSubject || "索取完整履歷")}&body=${encodeURIComponent(C.resumeBody || "")}`;
-    contact.push(`<a class="btn btn--dark" href="${esc(mail)}">索取完整履歷 ✉</a>`);
-    contact.push(`<button class="btn" type="button" data-copy="${esc(L.email)}">複製 Email</button>`);
+  if (resolvedEmail) {
+    contact.push(`<button class="btn btn--dark" type="button" data-mailto>索取完整履歷 ✉</button>`);
+    contact.push(`<button class="btn" type="button" data-copy-email>複製 Email</button>`);
   }
   if (L.resume) contact.push(`<a class="btn" href="${esc(L.resume)}" target="_blank" rel="noopener">完整履歷 ↗</a>`);
   if (L.linkedin) contact.push(`<a class="btn" href="${esc(L.linkedin)}" target="_blank" rel="noopener">LinkedIn ↗</a>`);
   if (L.github) contact.push(`<a class="btn" href="${esc(L.github)}" target="_blank" rel="noopener">GitHub ↗</a>`);
   $("[data-contact]").innerHTML = contact.join("");
 
-  // Copy email + toast
+  // Copy email / trigger mailto + toast
   const toast = $("[data-toast]");
   let toastTimer;
   const showToast = msg => {
@@ -216,6 +250,17 @@
     clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove("is-on"), 2200);
   };
   document.addEventListener("click", async e => {
+    const mailBtn = e.target.closest("[data-mailto]");
+    if (mailBtn && resolvedEmail) {
+      location.href = `mailto:${resolvedEmail}?subject=${encodeURIComponent(C.resumeSubject || "索取完整履歷")}&body=${encodeURIComponent(C.resumeBody || "")}`;
+      return;
+    }
+    const copyEmailBtn = e.target.closest("[data-copy-email]");
+    if (copyEmailBtn && resolvedEmail) {
+      try { await navigator.clipboard.writeText(resolvedEmail); showToast(`已複製 ${resolvedEmail}`); }
+      catch (err) { showToast(resolvedEmail); }
+      return;
+    }
     const b = e.target.closest("[data-copy]");
     if (!b) return;
     try { await navigator.clipboard.writeText(b.dataset.copy); showToast(`已複製 ${b.dataset.copy}`); }
@@ -237,6 +282,22 @@
   });
   // hide nav links whose section was removed
   $$(".nav__links a[href^='#']").forEach(a => { if (!document.querySelector(a.getAttribute("href"))) a.remove(); });
+
+  /* ---------- Scroll Spy (Highlight current nav link) ---------- */
+  if ("IntersectionObserver" in window) {
+    const navLinks = $$(".nav__links a[href^='#']");
+    const linkMap = new Map(navLinks.map(a => [a.getAttribute("href").slice(1), a]));
+    const spy = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          navLinks.forEach(a => a.classList.remove("is-active"));
+          const active = linkMap.get(en.target.id);
+          if (active) active.classList.add("is-active");
+        }
+      });
+    }, { rootMargin: "-35% 0px -55% 0px" });
+    $$("main > section.section[id]").forEach(sec => spy.observe(sec));
+  }
 
   /* ---------- Theme toggle ---------- */
   $("[data-theme-toggle]").addEventListener("click", () => {

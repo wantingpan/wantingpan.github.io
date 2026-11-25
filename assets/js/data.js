@@ -12,7 +12,7 @@ const PROFILE = {
   handle: "wantingpan",                      // GitHub 帳號
   location: "台北",
   role: "系統分析師 / 專案管理",
-  avatar: "",                                // 例如 "https://avatars.githubusercontent.com/wantingpan"，留空會顯示 initials
+  avatar: "https://avatars.githubusercontent.com/wantingpan", // 留空 "" 會顯示 initials
   headline: "把複雜的商業需求，\n變成穩定好用的系統",
   bio: "10 年以上軟體工程與系統分析經驗，從寫程式的工程師一路走到系統分析與專案管理。擅長 C#、.NET、MSSQL 與 Angular，會用 Figma、Axure、UML 把需求畫清楚，再用 Scrum 和 Azure DevOps 把專案穩穩推到上線。",
   stats: [
@@ -23,8 +23,9 @@ const PROFILE = {
   links: {
     github: "https://github.com/wantingpan",
     resume: "",                                // 想公開完整履歷再填連結
-    email: "",                               // ← 填你的 Email，「索取履歷」和「複製 Email」按鈕才會出現
-    linkedin: "",                            // ← 填 LinkedIn 網址，留空就不顯示
+    email: "",                                 // 可填明碼 Email，或使用下方 emailParts 防爬蟲設定
+    emailParts: ["", ""],                      // 防爬蟲拆分：["帳號", "網域"]，例如 ["wantingpan", "gmail.com"]
+    linkedin: "",                              // ← 填 LinkedIn 網址，留空就不顯示
   },
   skills: ["C#", ".NET Core", "ASP.NET MVC", "Angular", "TypeScript", "MSSQL", "RESTful API", "Azure DevOps", "Scrum", "CI/CD", "Figma", "Axure", "UML"],
 };
@@ -87,6 +88,7 @@ const PROJECTS = [
     team: "6 人，跨 4 家公司合作",
     points: ["部署在商場地端主機，串接專櫃 POS、贈品系統、停車場服務與消費者 APP", "與內部多套系統協作串接（CDP、BI 等）", "以 CDP 作為單一事實來源，串起 APP、POS 與 CRM", "中介層 + API Gateway 串接異質 POS，不用換硬體", "第二階段規劃嵌入式金融：數位錢包、BNPL、場景保險", "規劃產品網頁的 GEO 內容策略"],
     tags: ["地端部署", "CDP", "CRM", "API Gateway", "POS 串接", "停車場服務", "GEO"],
+    caseId: "case-omo",
     links: [],
   },
   /* 選填欄位（給非技術主管看）：
@@ -110,6 +112,7 @@ const PROJECTS = [
     team: "4 人",
     points: ["用 Axure 設計介面與流程，和全球使用者對齊需求", "擴充 NPI（新產品導入）模組，整合研發團隊的專案管理流程", "用 Azure Storage Queue 搭配 Azure Functions 自動同步訂單狀態", "以 Azure DevOps Dashboard 呈現時程與風險"],
     tags: ["C#", "MVC5", "Entity Framework", "AngularJS", "Azure Functions", "Azure Storage Queue", "Axure", "Azure DevOps"],
+    caseId: "case-sample",
     links: [],
   },
   {
@@ -127,6 +130,7 @@ const PROJECTS = [
     team: "4 人",
     points: ["將舊有 Lotus Notes 系統改寫到新平台", "透過 Azure Storage Queue 與 Azure Functions，和樣品系統自動同步訂單狀態", "建置點檢與放行單製作功能"],
     tags: ["C#", "MVC5", "Entity Framework", "AngularJS", "Azure Functions", "Azure Storage Queue", "Lotus Notes 移轉"],
+    caseId: "case-factory",
     links: [],
   },
   {
@@ -148,6 +152,7 @@ const PROJECTS = [
       "效能與品質優化：資料庫查詢調校、修正價格顯示邏輯",
     ],
     tags: ["UML", "Azure DevOps", "Scrum", "GA4"],
+    caseId: "case-ecom",
     links: [],
   },
   {
@@ -157,6 +162,7 @@ const PROJECTS = [
     category: "ecom", color: "grape", mark: "中台",
     image: "",
     description: "遊戲公司的虛擬商品買賣與庫存控管中台，串起商務與資料流。",
+    impact: "梳理跨系統商務與庫存資料流，如期完成中台上線",
     points: ["用 UML 與流程圖說明商務與資料流", "專案時程與版本控管", "協助上線測試"],
     tags: ["UML", "流程圖", "Azure DevOps"],
     links: [],
@@ -168,6 +174,7 @@ const PROJECTS = [
     category: "ent", color: "mint", mark: "招募",
     image: "",
     description: "零售集團的招募系統改寫，帶領團隊如期完成架構重建，並把技術完整移轉給客戶。",
+    impact: "如期完成架構重建，100% 技術與 CI/CD 流程移轉予客戶團隊",
     points: ["用 Figma 與流程圖對齊需求", "提供客戶整體解決方案", "建置產品版控與 CI/CD", "提供顧問服務，教導客戶團隊專案管理與 CI/CD 設定", "完成技術移轉"],
     tags: ["Figma", "流程圖", "CI/CD", "顧問服務", "技術移轉"],
     links: [],
@@ -179,6 +186,7 @@ const PROJECTS = [
     category: "ent", color: "sun", mark: "CI/CD",
     image: "",
     description: "協助客戶梳理多方外包商的開發與部署方式，建立 CI/CD 流程規範。",
+    impact: "統一多方外包商部署標準，建立自動化 CI/CD 驗證機制",
     points: ["了解客戶與外包商的部署流程", "設定 CI/CD 流程與測試"],
     tags: ["CI/CD", "Azure DevOps"],
     links: [],
@@ -201,6 +209,7 @@ const PROJECTS = [
     category: "ent", color: "coral", mark: "派遣",
     image: "",
     description: "物流業司機 APP 的管理後台，讓調度人員和管理者能即時派發臨時任務，透過推播把通知與派送單直接送到司機手機上。",
+    impact: "實現臨時任務即時推播派單，大幅縮短調度溝通時間",
     points: [
       "管理司機資料、所在位置與 APP 內容",
       "串接公司內部系統，自動推播通知到行動裝置",
@@ -228,6 +237,7 @@ const PROJECTS = [
     category: "ent", color: "grape", mark: "發票",
     image: "",
     description: "為政府財政資料單位處理巨量發票資料上傳，解決大量資料傳輸的效能問題。",
+    impact: "以 Dapper + SqlBulkCopy 突破巨量發票批次寫入效能瓶頸",
     points: ["用 Dapper 與 SqlBulkCopy 提升寫入效能", "負責開發與維運"],
     tags: ["C#", "Dapper", "SqlBulkCopy", "Entity Framework"],
     links: [],
@@ -331,6 +341,7 @@ const HIGHLIGHTS = {
    ============================================================ */
 const CASE_STUDIES = [
   {
+    id: "case-sample",
     title: "全球樣品申請管理系統",
     role: "軟體工程師 → 系統分析師", period: "2020 – 2022.7、2025.12 – 2026.7",
     team: "團隊 4 人",
@@ -356,6 +367,7 @@ const CASE_STUDIES = [
     ],
   },
   {
+    id: "case-factory",
     title: "智慧工廠系統（Lotus Notes 改寫）",
     role: "軟體工程師 → 系統分析師", period: "2020 – 2022.5",
     team: "團隊 4 人",
@@ -379,6 +391,7 @@ const CASE_STUDIES = [
     ],
   },
   {
+    id: "case-omo",
     title: "商場 OMO 虛實融合平台",
     role: "系統分析師", period: "2026 –",
     team: "團隊 6 人・跨 4 家公司",
@@ -413,6 +426,7 @@ const CASE_STUDIES = [
     ],
   },
   {
+    id: "case-ecom",
     title: "集團型電商系統：多個需求變更並行管理",
     role: "系統分析師", period: "2023 – 2024",
     team: "團隊 8 人",
@@ -447,8 +461,9 @@ const SIDE_PROJECTS = [
     subtitle: "給軟體工程師的中英雙語每日情報",
     period: "2026",
     color: "sky", mark: "情報",
-    image: "",
+    image: "assets/img/devbrief-cover.svg",
     description: "每天替軟體工程師整理 AI、語言與框架、雲端 DevOps、資安的重點，每則都附原文連結和來源類型，5 分鐘掌握今天該知道、該處理的事。",
+    impact: "全自動彙整 CISA 與 GitHub 資安通報 + 14 項技術 EOL 追蹤",
     points: [
       "需要行動清單：整合 CISA 已遭利用漏洞與 GitHub 套件漏洞公告，直接列出該修補的項目",
       "版本與支援期限：Node.js、Python、.NET、React 等 14 種技術的 EOL 日期一覽",
